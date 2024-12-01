@@ -48,4 +48,7 @@ Orders.init(
 
 Persons.hasMany(Orders);
 
-sequelize.authenticate();
+sequelize.authenticate().then(() => {
+  /* only wait 1 second for lock timeout */
+  sequelize.query("SET SESSION innodb_lock_wait_timeout = 1;");
+});

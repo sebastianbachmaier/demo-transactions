@@ -1,13 +1,27 @@
-
 table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid black;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
 }
 
-th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
+th,
+td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
 }
 
+.error {
+  background-color: red;
+  color: white;
+  padding: 1em;
+  margin: 1em 0;
+  border: 1px solid darkred;
+  width: 100%;
+  height: 2em;
+}
+
+.code {
+  height: 20em;
+  overflow: scroll;
+}

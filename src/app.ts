@@ -1,8 +1,8 @@
 import express from "express";
 import path from "path";
 
-import { Persons, sequelize } from "./db";
-import { Deferrable, Transaction, TransactionOptions } from "sequelize";
+import { Orders, Persons, sequelize } from "./db";
+import { Transaction, TransactionOptions } from "sequelize";
 import { loggingMiddleWare } from "./middleware";
 
 const app = express();
@@ -14,12 +14,13 @@ const port = 5001;
 
 const reset = async () => {
   await Persons.update({ name: "john" }, { where: { id: 1 } });
+  await Orders.update({ OrderNumber: 100 }, { where: { id: 1 } });
 };
 
 const checkIsolation = async (
   t1options: TransactionOptions,
   t2options: TransactionOptions,
-  log: (s: string | string[]) => void
+  log: (s: string | (number | string)[]) => void
 ) => {
   /* create transaction with isolation Level */
   const t1 = await sequelize.transaction(t1options);
@@ -37,7 +38,7 @@ const checkIsolation = async (
     await personInTransaction.update(
       { name: "Updated John" },
       {
-        transaction: t1,
+        transaction: t1
       }
     );
 
@@ -47,6 +48,18 @@ const checkIsolation = async (
       transaction: t2,
     });
 
+    const order = await Orders.findOne({
+      where: { id: 1 },
+      transaction: t2,
+    });
+
+    await order.update(
+      { OrderNumber: -100 },
+      {
+        transaction: t2,
+      }
+    );
+
     log([
       personInTransaction.name,
       samePerson?.name,
@@ -55,16 +68,19 @@ const checkIsolation = async (
     ]);
 
     await t1.commit();
+    await t2.commit();
   } catch (error) {
     await t1.rollback();
+    await t2.rollback();
+    return error;
   }
 };
 
 // update in transaction
 app.get("/", async (req, res) => {
   res.log([
-    "transaction",
-    "without transaction",
+    "personInTransaction",
+    "samePerson",
     "isolation level t2",
     "type t2",
   ]);
@@ -74,10 +90,10 @@ app.get("/", async (req, res) => {
     req.query.isolationLevel ?? Transaction.ISOLATION_LEVELS.REPEATABLE_READ;
   const type: Transaction.TYPES = req.query.type ?? Transaction.TYPES.DEFERRED;
   /** we read john when our update transaction is read commited */
-  await checkIsolation(
+  const error = await checkIsolation(
     {
-      isolationLevel: Transaction.ISOLATION_LEVELS.REPEATABLE_READ,
-      type: Transaction.TYPES.DEFERRED,
+      isolationLevel,
+      type,
     },
     {
       isolationLevel,
@@ -87,13 +103,14 @@ app.get("/", async (req, res) => {
   );
   await reset();
   res.html({
+    error,
     isolationLevelOptions: [
       "READ UNCOMMITTED",
       "READ COMMITTED",
       "REPEATABLE READ",
       "SERIALIZABLE",
     ],
-    typeOptions: ['DEFERRED', 'IMMEDIATE', 'EXCLUSIVE'],
+    typeOptions: ["DEFERRED", "IMMEDIATE", "EXCLUSIVE"],
     isolationLevel,
     type,
   });

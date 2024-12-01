@@ -9,7 +9,12 @@
 
 <main>
   <div>
-    <h1>with and without transaction</h1>
+    <h1>Two transactions:</h1>
+    <% if (error) { %>
+        <div class="error">
+        <%- error %>
+        </div>
+    <% } %>
     <br />
     <form action="/" method="get">
         <%# dropdown for sequelize isolation level %>
@@ -36,6 +41,49 @@
     <%= isolationLevel %>
     <br />
     <%- content %>
+    <br />
+    <div class="code">
+    <pre><code class="language-typescript">
+
+const t1 = await sequelize.transaction(t1options);
+const t2 = await sequelize.transaction(t2options);
+
+const personInTransaction = await Persons.findOne({
+  where: {
+    id: 1,
+  },
+  transaction: t1,
+});
+
+await personInTransaction.update(
+  { name: "Updated John" },
+  {
+    transaction: t1,
+  }
+);
+
+const samePerson = await Persons.findOne({
+  where: { id: 1 },
+  transaction: t2,
+});
+
+
+const order = await Orders.findOne({
+  where: { id: 1 },
+  transaction: t2,
+});
+
+await order.update(
+  { OrderNumber: -100 },
+  {
+    transaction: t2,
+  }
+);
+
+await t1.commit();
+await t2.commit();
+    </code></pre>
+  </div>
   </div>
 </main>
 
