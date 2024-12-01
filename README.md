@@ -2,6 +2,16 @@
 # Sequelize Transaction Sandbox 
 Try out how sequelize transaction parameters influence when transactions lock and when they modify what.
 
+Sequelize transaction return different things depent on your isolation level:
+- `READ UNCOMMITTED` - Makes it possible to read uncommitted changes from other transactions.
+- `READ COMMITTED` - Reads only changes that are commited from other transaction
+- `REPEATABLE READ` - If something has been read then you will read the same again even though it might be changed in another transaction
+- `SERIALIZABLE` - Locks the rows, so if another transaction reads it it will be locked until the first transaction is done (might be succesible to deadlocks)
+
+
+This project is a sandbox to see how that works in a real live application.
+
+
 ## Code
 ```typescript
 const t1 = await sequelize.transaction(t1options);
@@ -50,7 +60,8 @@ await t2.commit();
 npm run db
 ```
 ### Import DB
-!!! Check that you don't actually modify another DB
+> [!CAUTION]
+> Check that you don't actually modify another DB
 ```bash
 npm run import
 ```
