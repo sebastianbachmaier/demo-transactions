@@ -56,6 +56,8 @@ await t2.commit();
 ## How to run?
 
 ### Run the DB
+> [!IMPORTANT]  
+> You need to have docker installed
 ```bash
 npm run db
 ```
