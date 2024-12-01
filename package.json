@@ -5,7 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/app.js",
-    "build": "npx tsc"
+    "dev": "tsc --watch 'node ./dist/app.js'",
+    "build": "npx tsc",
+    "db": "docker run -d --name test-mysql-5114afde-94d7-4a3b-97da-d9d289d94871 -e MYSQL_ROOT_PASSWORD=strong_password -p 3407:3306 --volume=./db:/db mysql",
+    "import": "chmod +x ./db/import.sh && docker exec -it test-mysql-5114afde-94d7-4a3b-97da-d9d289d94871 /db/import.sh"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +18,9 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "ejs": "^3.1.10",
     "express": "^4.17.1",
+    "marked": "^15.0.3",
     "mysql2": "^3.11.5",
     "sequelize": "^6.37.5"
   }
