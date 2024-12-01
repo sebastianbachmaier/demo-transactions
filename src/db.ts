@@ -2,7 +2,7 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 
 export const sequelize = new Sequelize(
   "mysql://root:strong_password@localhost:3407/mydb"
-); // Example for postgres
+);
 
 export class Persons extends Model {
   declare id: number;

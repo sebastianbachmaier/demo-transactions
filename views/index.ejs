@@ -10,6 +10,31 @@
 <main>
   <div>
     <h1>with and without transaction</h1>
+    <br />
+    <form action="/" method="get">
+        <%# dropdown for sequelize isolation level %>
+        <select name="isolationLevel" value="<%= isolationLevel %>">
+            <% isolationLevelOptions.forEach((subject,index) => { %>
+                <option value="<%-subject%>" <%= isolationLevel === subject ? 'selected' : '' %>>
+                  <%- subject %>
+                </option>
+            <%})%>
+        </select>
+
+
+        <%# dropdown for sequelize t type %>
+        <select name="type" value="<%= type %>">
+            <% typeOptions.forEach((subject,index) => { %>
+                <option value="<%-subject%>" <%= type === subject ? 'selected' : '' %>>
+                  <%- subject %>
+                </option>
+            <%})%>
+        </select>
+        <button type="submit">call</button>
+    </form>
+    <br />
+    <%= isolationLevel %>
+    <br />
     <%- content %>
   </div>
 </main>
