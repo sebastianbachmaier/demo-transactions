@@ -1,7 +1,7 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 export const sequelize = new Sequelize(
-  "mysql://root:strong_password@localhost:3407/mydb"
+  "mysql://root:UtqexzCcEDkw5Kuj2hf74r@localhost:3407/mydb"
 );
 
 export class Persons extends Model {
@@ -48,7 +48,8 @@ Orders.init(
 
 Persons.hasMany(Orders);
 
-sequelize.authenticate().then(() => {
+sequelize.authenticate().then(async () => {
   /* only wait 1 second for lock timeout */
-  sequelize.query("SET SESSION innodb_lock_wait_timeout = 1;");
+  await sequelize.query("SET GLOBAL innodb_lock_wait_timeout = 1;");
+  await sequelize.query("SET SESSION innodb_lock_wait_timeout = 1;");
 });

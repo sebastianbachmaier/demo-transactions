@@ -32,20 +32,20 @@ const checkIsolation = async (
       where: {
         id: 1,
       },
-      transaction: t1,
+      transaction: t1
     });
 
     await personInTransaction.update(
       { name: "Updated John" },
       {
-        transaction: t1
+        transaction: t1,
       }
     );
 
     /* get the same person but before it's committed */
     const samePerson = await Persons.findOne({
       where: { id: 1 },
-      transaction: t2,
+      transaction: t2
     });
 
     const order = await Orders.findOne({
@@ -93,7 +93,7 @@ app.get("/", async (req, res) => {
   const error = await checkIsolation(
     {
       isolationLevel,
-      type,
+      type
     },
     {
       isolationLevel,

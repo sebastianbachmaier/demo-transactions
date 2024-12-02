@@ -55,6 +55,11 @@ await t2.commit();
 
 ## How to run?
 
+### Install dependencies
+```bash
+npm install
+```
+
 ### Run the DB
 > [!IMPORTANT]  
 > You need to have docker installed
