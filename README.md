@@ -73,6 +73,7 @@ npm run db
 npm run import
 ```
 
+### Run the server
 ```bash
 npm run dev
 ```
